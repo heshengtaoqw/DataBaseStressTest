@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.0 r1840935">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
+      <stringProp name="TestPlan.comments"></stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="TestPlan.user_define_classpath">D:\Dev\Maven\repo\m2\org\json\json\20160810\json-20160810.jar</stringProp>
+    </TestPlan>
+    <hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">3</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads"> 100</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <MongoSourceElement guiclass="TestBeanGUI" testclass="MongoSourceElement" testname="MongoDB Source Config (DEPRECATED)" enabled="true">
+          <boolProp name="autoConnectRetry">false</boolProp>
+          <intProp name="connectTimeout">0</intProp>
+          <stringProp name="connection">127.0.0.1</stringProp>
+          <intProp name="connectionsPerHost">10000</intProp>
+          <boolProp name="continueOnInsertError">false</boolProp>
+          <boolProp name="fsync">false</boolProp>
+          <longProp name="maxAutoConnectRetryTime">0</longProp>
+          <intProp name="maxWaitTime">120000</intProp>
+          <boolProp name="safe">false</boolProp>
+          <boolProp name="socketKeepAlive">false</boolProp>
+          <intProp name="socketTimeout">0</intProp>
+          <stringProp name="source">test</stringProp>
+          <intProp name="threadsAllowedToBlockForConnectionMultiplier">5</intProp>
+          <boolProp name="waitForJournaling">false</boolProp>
+          <intProp name="writeOperationNumberOfServers">0</intProp>
+          <intProp name="writeOperationTimeout">0</intProp>
+        </MongoSourceElement>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="false">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">import com.mongodb.*;
+import com.mongodb.DB;
+import org.apache.jmeter.protocol.mongodb.config.MongoDBHolder;
+import com.mongodb.DBCollection; 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;// import DBCollection class
+
+
+//List&lt;DBObject&gt; list = new ArrayList&lt;DBObject&gt;();
+DB db = MongoDBHolder.getDBFromSource(&quot;test&quot;, &quot;fms_system&quot;);
+DBCollection collection = db.getCollection(&quot;FMS_USER&quot;); // get &quot;zips&quot; collection
+//long count = collection.getCount();
+//String result = String.valueOf(count);              // convert long to String
+//SampleResult.setResponseData(result.getBytes());
+
+BasicDBObject object = new BasicDBObject(); // create empty document structure
+//BasicDBList location = new BasicDBList();   // create array containing latitude and longitude
+//location.add(32.211100D);                   // add double values
+//location.add(44.251500D);                   // for latitude and longitude
+//object.append(&quot;rec_id&quot;,&quot;BABYLON&quot;);            // provide &quot;city&quot; value
+////object.append(&quot;loc&quot;,location);              // provide &quot;loc&quot; value using earlier created array
+//object.put(&quot;name&quot;,&quot;BABYLON&quot;);                // provide &quot;pop&quot;
+//object.put(&quot;cellphone&quot;,&quot;13852&quot;);                // provide &quot;state&quot;
+//object.put(&quot;createdTime&quot;,&quot;date&quot;);
+//object.put(&quot;tenant_id&quot;,&quot;IS&quot;);
+//object.put(&quot;sex&quot;,&quot;11&quot;);
+//object.put(&quot;state&quot;,&quot;false&quot;);
+//object.put(&quot;others_long&quot;,&quot;99.99&quot;);
+//WriteResult result = collection.insert(object, WriteConcern.ACKNOWLEDGED); 
+
+BasicDBObject query = new BasicDBObject(&quot;recid&quot;,&quot;1&quot;);
+//query.append(&quot;cellphone&quot;, &quot;13852&quot;);
+DBCursor cursor = collection.find(query);  // execute the query and get DBCursor instance
+StringBuilder resultBuilder = new StringBuilder(); // initialize StringBuilder to construct response
+
+while (cursor.hasNext()) {             // while there is a DBObject available
+ DBObject result = cursor.next();     // get the current DBObject
+ resultBuilder.append(result.toString()); // append it to result builder
+}
+
+
+//list.add(object);
+//collection.insert(object);
+
+SampleResult.setResponseData(resultBuilder.toString().getBytes());               // set sampler response to insert result</stringProp>
+          <stringProp name="scriptLanguage">java</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
+        <MongoScriptSampler guiclass="TestBeanGUI" testclass="MongoScriptSampler" testname="MongoDB Script (DEPRECATED)" enabled="false">
+          <stringProp name="source">test</stringProp>
+          <stringProp name="database">fms_system</stringProp>
+          <stringProp name="username"></stringProp>
+          <stringProp name="password"></stringProp>
+          <stringProp name="script">mongo</stringProp>
+        </MongoScriptSampler>
+        <hashTree/>
+        <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="Synchronizing Timer" enabled="false">
+          <intProp name="groupSize">1</intProp>
+          <longProp name="timeoutInMs">0</longProp>
+        </SyncTimer>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="HTTP Request" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">www.baidu.com</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path"></stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">false</stringProp>
+          <stringProp name="script">import com.mongodb.*;
+import com.mongodb.DB;
+import org.apache.jmeter.protocol.mongodb.config.MongoDBHolder;
+import com.mongodb.DBCollection; 
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;// import DBCollection class
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+
+Date startDate = new Date();
+System.out.println(startDate);
+//List&lt;DBObject&gt; list = new ArrayList&lt;DBObject&gt;();
+DB db = MongoDBHolder.getDBFromSource(&quot;test&quot;, &quot;fms_system&quot;);
+DBCollection collection = db.getCollection(&quot;FMS_LEAVE&quot;); // get &quot;zips&quot; collection
+//long count = collection.getCount();
+//String result = String.valueOf(count);              // convert long to String
+//SampleResult.setResponseData(result.getBytes());
+
+//BasicDBObject object = new BasicDBObject(); // create empty document structure
+//BasicDBList location = new BasicDBList();   // create array containing latitude and longitude
+//location.add(32.211100D);                   // add double values
+//location.add(44.251500D);                   // for latitude and longitude
+//object.append(&quot;rec_id&quot;,&quot;BABYLON&quot;);            // provide &quot;city&quot; value
+////object.append(&quot;loc&quot;,location);              // provide &quot;loc&quot; value using earlier created array
+//object.put(&quot;name&quot;,&quot;BABYLON&quot;);                // provide &quot;pop&quot;
+//object.put(&quot;cellphone&quot;,&quot;13852&quot;);                // provide &quot;state&quot;
+//object.put(&quot;createdTime&quot;,&quot;date&quot;);
+//object.put(&quot;tenant_id&quot;,&quot;IS&quot;);
+//object.put(&quot;sex&quot;,&quot;11&quot;);
+//object.put(&quot;state&quot;,&quot;false&quot;);
+//object.put(&quot;others_long&quot;,&quot;99.99&quot;);
+//WriteResult result = collection.insert(object, WriteConcern.ACKNOWLEDGED);
+
+/*
+		
+            int randNum = r.nextInt(5);
+             BasicDBObject query;
+            String s = &quot;{\&quot;Staff_ID\&quot;: \&quot;1\&quot;, \&quot;Leave_Type\&quot;: 4}&quot;;
+            String s2 = &quot;{ Staff_ID : \&quot;9651\&quot;,\&quot;Bank_Info.bank_num\&quot;:4}&quot;;
+            String s3 = &quot;{ Staff_ID : \&quot;9651\&quot;,\&quot;Field9\&quot;:\&quot;d74xfv6mcfruk2xs0lov0q6057gord\&quot;}&quot;;
+            String s4 = &quot;{ Staff_ID : \&quot;9651\&quot;,\&quot;Field9\&quot;:\&quot;d74xfv6mcfruk2xs0lov0q6057gord\&quot;,\&quot;Other_Long\&quot;:{20.99},\&quot;Flow_State\&quot;:false,\&quot;Bank_Info.bank_num\&quot;:4}&quot;;
+            String s5 = &quot;{ Staff_ID : \&quot;9651\&quot;}&quot;;
+  */
+
+  
+  		Random r = new Random();
+  		int randNum = r.nextInt(5);
+  		BasicDBObject query;
+            if(randNum==1) {	
+            HashMap map = new HashMap();
+            map.put(&quot;Staff_ID&quot;, &quot;9651&quot;);
+            map.put(&quot;Leave_Type&quot;, 0);
+             query = new BasicDBObject(map);
+            }else if (randNum==2){
+            HashMap map = new HashMap();
+            map.put(&quot;Staff_ID&quot;, &quot;9651&quot;);
+            map.put(&quot;Bank_Info.bank_num&quot;,4);
+             query = new BasicDBObject(map);
+            }else if(randNum==3){
+            	 HashMap map = new HashMap();
+            map.put(&quot;Staff_ID&quot;, &quot;9651&quot;);
+            map.put(&quot;Field9&quot;, &quot;张三李四王五newumi78c9g8y5tn76s7akmuef48yq&quot;);
+             query = new BasicDBObject(map);
+            }
+            else if (randNum==4){
+             HashMap map = new HashMap();
+           map.put(&quot;Staff_ID&quot;, &quot;9651&quot;);
+           map.put(&quot;Flow_State&quot;, false);
+           map.put(&quot;Bank_Info.bank_num&quot;,4);
+           map.put(&quot;Others_Long&quot;,20.99d);
+             query = new BasicDBObject(map);
+            }
+            else{
+            	 HashMap map = new HashMap();
+            map.put(&quot;Staff_ID&quot;, &quot;9651&quot;);
+            map.put(&quot;Tenant_ID&quot;,&quot;8&quot; );
+             query = new BasicDBObject(map);
+            }
+            
+
+
+DBCursor cursor = collection.find(query);  // execute the query and get DBCursor instance
+StringBuilder resultBuilder = new StringBuilder(); // initialize StringBuilder to construct response
+//
+while (cursor.hasNext()) {             // while there is a DBObject available
+ DBObject result = cursor.next();     // get the current DBObject
+ resultBuilder.append(result.toString()); // append it to result builder
+}
+
+Date endDate = new Date();
+System.out.println(endDate);
+long time = endDate.getTime() - startDate.getTime();
+System.out.println(time);
+resultBuilder.append(time);
+//
+//
+////list.add(object);
+////collection.insert(object);
+//
+SampleResult.setResponseData(resultBuilder.toString().getBytes());               // set sampler response to insert result</stringProp>
+        </JSR223Sampler>
+        <hashTree>
+          <ResultCollector guiclass="StatGraphVisualizer" testclass="ResultCollector" testname="Aggregate Graph" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>true</responseData>
+                <samplerData>true</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>true</responseHeaders>
+                <requestHeaders>true</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <fileName>true</fileName>
+                <hostname>true</hostname>
+                <threadCounts>true</threadCounts>
+                <sampleCount>true</sampleCount>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+          <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="false">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>true</responseData>
+                <samplerData>true</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>true</responseHeaders>
+                <requestHeaders>true</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <fileName>true</fileName>
+                <hostname>true</hostname>
+                <threadCounts>true</threadCounts>
+                <sampleCount>true</sampleCount>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+          <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ResponseTimesOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Response Times Over Time" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>true</responseData>
+                <samplerData>true</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>true</responseHeaders>
+                <requestHeaders>true</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <fileName>true</fileName>
+                <hostname>true</hostname>
+                <threadCounts>true</threadCounts>
+                <sampleCount>true</sampleCount>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+            <longProp name="interval_grouping">500</longProp>
+            <boolProp name="graph_aggregated">true</boolProp>
+            <stringProp name="include_sample_labels"></stringProp>
+            <stringProp name="exclude_sample_labels"></stringProp>
+            <stringProp name="start_offset"></stringProp>
+            <stringProp name="end_offset"></stringProp>
+            <boolProp name="include_checkbox_state">false</boolProp>
+            <boolProp name="exclude_checkbox_state">false</boolProp>
+          </kg.apc.jmeter.vizualizers.CorrectedResultCollector>
+          <hashTree/>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>true</responseData>
+                <samplerData>true</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>true</responseHeaders>
+                <requestHeaders>true</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <url>true</url>
+                <fileName>true</fileName>
+                <hostname>true</hostname>
+                <threadCounts>true</threadCounts>
+                <sampleCount>true</sampleCount>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+        </hashTree>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
